@@ -5,7 +5,8 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:4000/api/auth';
+  private apiUrl =  'http://10.0.2.2:4000/api/auth' ; // URL to MOVIL api
+  // private apiUrl = 'http://localhost:4000/api/auth'; // URL to WEB api
 
   constructor(private http: HttpClient) {}
 

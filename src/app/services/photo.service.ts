@@ -7,7 +7,8 @@ import { AuthService } from './auth.service';
   providedIn: 'root'
 })
 export class PhotoService {
-  private apiUrl = 'http://localhost:4000/api/photos';
+  private apiUrl =   'http://10.0.2.2:4000/api/photos' ; // URL to MOVIL api
+  // private apiUrl = 'http://localhost:4000/api/photos'; // URL to WEB api
 
   constructor(private http: HttpClient,
                 private authService: AuthService
@@ -21,7 +22,7 @@ export class PhotoService {
   }
 
   getPhotos() {
-    return this.http.get(this.apiUrl, { headers: this.getAuthHeaders() });
+    return this.http.get(`${this.apiUrl}`, { headers: this.getAuthHeaders() });
   }
 
   uploadPhoto(base64Data: string) {
