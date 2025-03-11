@@ -23,14 +23,6 @@ if (environment.production) {
   enableProdMode();
 }
 
-// (2) Crear la instancia de Storage con fallback a localstorage
-const storageInstance = provideStorage(PLATFORM_ID, {
-  name: '__mydb',
-  driverOrder: ['localstorage'] // Solo localstorage
-} as StorageConfig);
-
-// (3) Mapear la instancia a un provider
-const storageProvider = { provide: Storage, useValue : storageInstance };
 
 // (4) Definir los elementos PWA (pwa-camera-modal) en el navegador
 defineCustomElements(window);
@@ -39,7 +31,6 @@ defineCustomElements(window);
 bootstrapApplication(AppComponent, {
   providers: [
     provideIonicAngular(),   // Ionic en modo standalone
-    storageProvider,         // Provider de Storage con fallback
     provideHttpClient(),     // HttpClient standalone
     provideRouter(routes),    // Rutas
     provideHttpClient(withInterceptorsFromDi()), // Usar conInterceptorsFromDi
