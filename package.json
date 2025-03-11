@@ -6,8 +6,9 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build:android": "ng build  && npx cap add android && npx cap copy android && npx cap sync android",
+    "build:android": "ng build --configuration development && npx cap add android && npx cap copy android && npx cap sync android",
     "run:android": "npx cap open android",
+    "runWeb": "ionic serve",
     "build:ios": "ng build  && npx cap add ios && npx cap copy ios && npx cap sync ios",
     "run:ios": "npx cap open ios",
     "build:web": "ng build --prod",
