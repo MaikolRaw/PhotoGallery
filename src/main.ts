@@ -1,14 +1,49 @@
+// src/main.ts
+import { enableProdMode, PLATFORM_ID } from '@angular/core';
 import { bootstrapApplication } from '@angular/platform-browser';
-import { RouteReuseStrategy, provideRouter, withPreloading, PreloadAllModules } from '@angular/router';
-import { IonicRouteStrategy, provideIonicAngular } from '@ionic/angular/standalone';
+import { provideRouter } from '@angular/router';
+import { provideIonicAngular } from '@ionic/angular/standalone';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
-import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
+import { routes } from './app/app.routes';
 
+// Ionic Storage
+import { provideStorage, StorageConfig, Storage } from '@ionic/storage-angular';
+
+// Para cargar PWA Elements (cámara en web)
+import { defineCustomElements } from '@ionic/pwa-elements/loader';
+
+// Opcional: environment
+import { environment } from './environments/environment';
+import { TokenInterceptor } from './app/services/token.interceptor';
+
+// (1) enableProdMode si estás en producción
+if (environment.production) {
+  enableProdMode();
+}
+
+// (2) Crear la instancia de Storage con fallback a localstorage
+const storageInstance = provideStorage(PLATFORM_ID, {
+  name: '__mydb',
+  driverOrder: ['localstorage'] // Solo localstorage
+} as StorageConfig);
+
+// (3) Mapear la instancia a un provider
+const storageProvider = { provide: Storage, useValue : storageInstance };
+
+// (4) Definir los elementos PWA (pwa-camera-modal) en el navegador
+defineCustomElements(window);
+
+// (5) Bootstrap de la aplicación en modo standalone
 bootstrapApplication(AppComponent, {
   providers: [
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    provideIonicAngular(),
-    provideRouter(routes, withPreloading(PreloadAllModules)),
-  ],
-});
+    provideIonicAngular(),   // Ionic en modo standalone
+    storageProvider,         // Provider de Storage con fallback
+    provideHttpClient(),     // HttpClient standalone
+    provideRouter(routes),    // Rutas
+    provideHttpClient(withInterceptorsFromDi()), // Usar conInterceptorsFromDi
+    { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+  ]
+}).catch(err => console.error(err));
+
